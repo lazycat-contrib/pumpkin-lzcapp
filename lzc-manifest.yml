@@ -1,0 +1,27 @@
+application:
+  subdomain: pumpkin
+  background_task: true
+  upstreams:
+    - location: /
+      backend: file:///lzcapp/pkg/content/index.html
+  public_path:
+    - /
+  ingress:
+    - protocol: tcp
+      port: 25565
+      service: pumpkin
+      description: Minecraft Java Edition
+    - protocol: udp
+      port: 19132
+      service: pumpkin
+      description: Minecraft Bedrock Edition
+
+services:
+  pumpkin:
+    # upstream: ghcr.io/pumpkin-mc/pumpkin:0.1.0
+    image: ghcr.1ms.run/pumpkin-mc/pumpkin:0.1.0
+    binds:
+      - /lzcapp/var/pumpkin:/pumpkin
+
+usage: |
+  Pumpkin 在后台运行 Minecraft 服务器。Java 版客户端通过 TCP 25565 连接，基岩版客户端通过 UDP 19132 连接。服务器配置、世界和运行数据持久化保存在应用数据目录中。

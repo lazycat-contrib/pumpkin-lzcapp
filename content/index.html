@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#17110d">
+    <meta name="description" content="Pumpkin Minecraft 服务器的本地介绍与连接信息。">
+    <link rel="icon" href="pumpkin.png" type="image/png">
+    <title>Pumpkin Minecraft Server</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --canvas: oklch(17% 0.018 52);
+        --surface: oklch(23% 0.025 50);
+        --surface-raised: oklch(28% 0.035 50);
+        --ink: oklch(92% 0.035 76);
+        --muted: oklch(72% 0.035 68);
+        --orange: oklch(72% 0.19 51);
+        --orange-bright: oklch(80% 0.16 65);
+        --brown: oklch(45% 0.105 47);
+        --line: color-mix(in oklch, var(--orange) 38%, transparent);
+        --radius-sm: 10px;
+        --radius-md: 18px;
+        --radius-lg: 28px;
+        --page: min(1120px, calc(100% - 40px));
+        font-family: ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold", "PingFang SC", "Microsoft YaHei", sans-serif;
+        font-synthesis: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--canvas);
+        scroll-behavior: smooth;
+      }
+
+      body {
+        position: relative;
+        isolation: isolate;
+        min-height: 100vh;
+        margin: 0;
+        color: var(--ink);
+        background-color: var(--canvas);
+      }
+
+      body::before {
+        position: fixed;
+        z-index: -1;
+        inset: 0;
+        background-image:
+          linear-gradient(color-mix(in oklch, var(--orange) 5%, transparent) 1px, transparent 1px),
+          linear-gradient(90deg, color-mix(in oklch, var(--orange) 5%, transparent) 1px, transparent 1px);
+        background-size: 32px 32px;
+        content: "";
+        pointer-events: none;
+      }
+
+      button,
+      a {
+        touch-action: manipulation;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .skip-link {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 10;
+        padding: 10px 14px;
+        border-radius: var(--radius-sm);
+        color: var(--canvas);
+        background: var(--orange-bright);
+        transform: translateY(-150%);
+        transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .skip-link:focus {
+        transform: translateY(0);
+      }
+
+      .site-header,
+      main,
+      footer {
+        width: var(--page);
+        margin-inline: auto;
+      }
+
+      .site-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 82px;
+        gap: 20px;
+      }
+
+      .wordmark {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .wordmark::before {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px 7px 3px 7px;
+        background: var(--orange);
+        content: "";
+        transform: rotate(12deg);
+      }
+
+      .version {
+        color: var(--muted);
+        font-size: 13px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+        align-items: center;
+        gap: clamp(32px, 7vw, 92px);
+        min-height: calc(100vh - 82px);
+        padding: 50px 0 86px;
+      }
+
+      .hero-copy {
+        max-width: 700px;
+        animation: arrive 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 20px;
+        color: var(--orange-bright);
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::after {
+        width: 46px;
+        height: 2px;
+        background: currentColor;
+        content: "";
+      }
+
+      h1 {
+        max-width: 10ch;
+        margin: 0;
+        font-size: clamp(52px, 8.2vw, 104px);
+        font-weight: 900;
+        line-height: 0.94;
+        letter-spacing: -0.035em;
+        text-wrap: balance;
+      }
+
+      .lead {
+        max-width: 58ch;
+        margin: 28px 0 0;
+        color: var(--muted);
+        font-size: clamp(17px, 2vw, 21px);
+        line-height: 1.75;
+        text-wrap: pretty;
+      }
+
+      .hero-art {
+        position: relative;
+        display: grid;
+        place-items: center;
+        min-height: 430px;
+        animation: arrive 680ms 90ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      .hero-art::before {
+        position: absolute;
+        inset: 12% 4% 2%;
+        border-radius: 48% 52% 44% 56%;
+        background: color-mix(in oklch, var(--orange) 13%, transparent);
+        content: "";
+        transform: rotate(-7deg);
+      }
+
+      .hero-art img {
+        position: relative;
+        display: block;
+        width: min(100%, 460px);
+        height: auto;
+        filter: drop-shadow(0 26px 30px rgb(0 0 0 / 28%));
+        transform: rotate(2deg);
+      }
+
+      .connection-section {
+        padding: 12px 0 96px;
+      }
+
+      .section-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 30px;
+        margin-bottom: 24px;
+      }
+
+      h2 {
+        max-width: 15ch;
+        margin: 0;
+        font-size: clamp(32px, 5vw, 58px);
+        line-height: 1;
+        letter-spacing: -0.022em;
+        text-wrap: balance;
+      }
+
+      .section-note {
+        max-width: 36ch;
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.7;
+        text-align: right;
+      }
+
+      .ports {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .port-card {
+        position: relative;
+        min-height: 260px;
+        padding: clamp(24px, 4vw, 42px);
+        overflow: hidden;
+        border: 1px dashed var(--line);
+        border-radius: var(--radius-md);
+        background: var(--surface);
+      }
+
+      .port-card::after {
+        position: absolute;
+        right: -34px;
+        bottom: -46px;
+        color: color-mix(in oklch, var(--orange) 12%, transparent);
+        font-size: 180px;
+        font-weight: 900;
+        line-height: 1;
+        content: attr(data-mark);
+        pointer-events: none;
+      }
+
+      .edition {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        color: var(--orange-bright);
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .protocol {
+        position: relative;
+        z-index: 1;
+        margin: 18px 0 10px;
+        font-size: 17px;
+        font-weight: 700;
+      }
+
+      .address {
+        position: relative;
+        z-index: 1;
+        display: block;
+        width: 100%;
+        min-height: 58px;
+        margin: 24px 0 0;
+        padding: 14px 16px;
+        border: 0;
+        border-radius: var(--radius-sm);
+        color: var(--canvas);
+        background: var(--orange);
+        font: inherit;
+        font-size: clamp(15px, 2vw, 18px);
+        font-weight: 900;
+        font-variant-numeric: tabular-nums;
+        text-align: left;
+        cursor: pointer;
+        transition-property: transform, background-color;
+        transition-duration: 150ms;
+        transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .address:active {
+        transform: scale(0.96);
+      }
+
+      .address:focus-visible,
+      .source-link:focus-visible,
+      .wordmark:focus-visible {
+        outline: 3px solid var(--orange-bright);
+        outline-offset: 4px;
+      }
+
+      .address small {
+        display: block;
+        margin-top: 3px;
+        font-size: 12px;
+        font-weight: 700;
+        opacity: 0.72;
+      }
+
+      .facts {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: clamp(28px, 7vw, 90px);
+        align-items: start;
+        padding: 18px 0 110px;
+      }
+
+      .fact-intro p {
+        max-width: 58ch;
+        margin: 22px 0 0;
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.75;
+        text-wrap: pretty;
+      }
+
+      .fact-list {
+        margin: 0;
+      }
+
+      .fact-row {
+        display: grid;
+        grid-template-columns: 112px 1fr;
+        gap: 20px;
+        padding: 18px 0;
+        border-bottom: 1px solid color-mix(in oklch, var(--ink) 10%, transparent);
+      }
+
+      .fact-row:first-child {
+        border-top: 1px solid color-mix(in oklch, var(--ink) 10%, transparent);
+      }
+
+      dt {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      dd {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        min-height: 96px;
+        border-top: 1px solid color-mix(in oklch, var(--ink) 10%, transparent);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .source-link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        color: var(--ink);
+        font-weight: 800;
+        text-underline-offset: 4px;
+      }
+
+      @media (hover: hover) {
+        .address:hover {
+          background: var(--orange-bright);
+          transform: translateY(-2px);
+        }
+
+        .source-link:hover {
+          color: var(--orange-bright);
+        }
+      }
+
+      @media (max-width: 760px) {
+        :root {
+          --page: min(100% - 28px, 620px);
+        }
+
+        .site-header {
+          min-height: 70px;
+        }
+
+        .hero {
+          grid-template-columns: 1fr;
+          min-height: auto;
+          padding: 52px 0 76px;
+        }
+
+        .hero-art {
+          grid-row: 1;
+          min-height: 280px;
+        }
+
+        .hero-art img {
+          width: min(88%, 340px);
+        }
+
+        .section-heading,
+        footer {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .section-note {
+          text-align: left;
+        }
+
+        .ports,
+        .facts {
+          grid-template-columns: 1fr;
+        }
+
+        .port-card {
+          min-height: 230px;
+        }
+
+        .facts {
+          padding-bottom: 78px;
+        }
+
+        footer {
+          justify-content: center;
+          padding: 28px 0 calc(28px + env(safe-area-inset-bottom));
+        }
+      }
+
+      @media (max-width: 380px) {
+        h1 {
+          font-size: 46px;
+        }
+
+        .fact-row {
+          grid-template-columns: 90px 1fr;
+          gap: 14px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      @keyframes arrive {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+    <header class="site-header">
+      <a class="wordmark" href="#main-content">Pumpkin server</a>
+      <span class="version">IMAGE 0.1.0</span>
+    </header>
+
+    <main id="main-content">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow" lang="en">Fast Minecraft hosting</p>
+          <h1 id="hero-title">一颗南瓜，撑起两个世界。</h1>
+          <p class="lead">
+            Pumpkin 帮你运行快速、高效的 Minecraft 服务器。服务安装后常驻后台，Java 版和基岩版玩家使用各自端口直接加入。
+          </p>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <img src="pumpkin.png" width="512" height="512" alt="">
+        </div>
+      </section>
+
+      <section class="connection-section" aria-labelledby="connection-title">
+        <div class="section-heading">
+          <h2 id="connection-title">两个版本，两个入口。</h2>
+          <p class="section-note">点击地址即可复制。请把页面显示的主机名和对应端口发给玩家。</p>
+        </div>
+
+        <div class="ports">
+          <article class="port-card" data-mark="J">
+            <p class="edition" lang="en">Java Edition</p>
+            <p class="protocol">TCP 端口 25565</p>
+            <button class="address" type="button" data-port="25565" aria-label="复制 Java 版服务器地址">
+              <span class="address-value">当前主机:25565</span>
+              <small>点击复制 Java 版地址</small>
+            </button>
+          </article>
+
+          <article class="port-card" data-mark="B">
+            <p class="edition" lang="en">Bedrock Edition</p>
+            <p class="protocol">UDP 端口 19132</p>
+            <button class="address" type="button" data-port="19132" aria-label="复制基岩版服务器地址">
+              <span class="address-value">当前主机:19132</span>
+              <small>点击复制基岩版地址</small>
+            </button>
+          </article>
+        </div>
+      </section>
+
+      <section class="facts" aria-labelledby="facts-title">
+        <div class="fact-intro">
+          <h2 id="facts-title">服务器在后台，数据留在本机。</h2>
+          <p>
+            Pumpkin 没有 Web 管理后台，这个页面只提供连接信息。服务器配置、世界和运行数据会持久化保存到应用数据目录，更新或重启应用不会清空它们。
+          </p>
+        </div>
+
+        <dl class="fact-list">
+          <div class="fact-row">
+            <dt>镜像版本</dt>
+            <dd>0.1.0</dd>
+          </div>
+          <div class="fact-row">
+            <dt>Java 版</dt>
+            <dd>TCP 25565</dd>
+          </div>
+          <div class="fact-row">
+            <dt>基岩版</dt>
+            <dd>UDP 19132</dd>
+          </div>
+          <div class="fact-row">
+            <dt>容器数据</dt>
+            <dd>/pumpkin</dd>
+          </div>
+        </dl>
+      </section>
+    </main>
+
+    <footer>
+      <span>本地介绍页，不使用统计脚本或 Cookie。</span>
+      <a class="source-link" href="https://github.com/Pumpkin-MC/Pumpkin" target="_blank" rel="noreferrer">查看 Pumpkin 上游项目</a>
+    </footer>
+
+    <script>
+      const hostname = window.location.hostname || "pumpkin.你的懒猫地址";
+
+      document.querySelectorAll(".address").forEach((button) => {
+        const value = `${hostname}:${button.dataset.port}`;
+        const output = button.querySelector(".address-value");
+        const hint = button.querySelector("small");
+        output.textContent = value;
+
+        button.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(value);
+            hint.textContent = "已复制";
+          } catch {
+            hint.textContent = "请长按或选中地址复制";
+          }
+
+          window.setTimeout(() => {
+            hint.textContent = button.dataset.port === "25565"
+              ? "点击复制 Java 版地址"
+              : "点击复制基岩版地址";
+          }, 1800);
+        });
+      });
+    </script>
+  </body>
+</html>
