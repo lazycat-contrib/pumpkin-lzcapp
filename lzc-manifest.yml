@@ -17,8 +17,8 @@ application:
       description: Minecraft Bedrock Edition
 services:
   pumpkin:
-    # upstream: ghcr.io/pumpkin-mc/pumpkin:0.2.1
-    image: ghcr.1ms.run/pumpkin-mc/pumpkin:0.2.1
+    # upstream: ghcr.io/pumpkin-mc/pumpkin:0.2.2
+    image: ghcr.1ms.run/pumpkin-mc/pumpkin:0.2.2
     binds:
       - /lzcapp/var/pumpkin:/pumpkin
 usage: |
